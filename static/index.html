@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViajaAI - Recomendação de Viagens</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-plane-departure"></i>
+                <h1>ViajaAI</h1>
+            </div>
+            <p class="tagline">Descubra seu destino ideal com base nas suas preferências</p>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Para onde você quer ir?</h2>
+            <p>Preencha suas preferências e encontre o destino perfeito para sua próxima aventura</p>
+        </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="filtros-section">
+        <div class="container">
+            <div class="filtros-card">
+                <h3><i class="fas fa-sliders-h"></i> Suas Preferências</h3>
+                
+                <form id="filtros-form">
+                    <div class="filtros-grid">
+                        <!-- Duração -->
+                        <div class="filtro-grupo">
+                            <label for="duracao">
+                                <i class="fas fa-calendar-alt"></i> Duração da Viagem
+                            </label>
+                            <select id="duracao" name="duracao">
+                                <option value="">Qualquer duração</option>
+                                <option value="curta">Curta (até 5 dias)</option>
+                                <option value="media">Média (6-14 dias)</option>
+                                <option value="longa">Longa (15+ dias)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="filtro-grupo">
+                            <label for="tipo">
+                                <i class="fas fa-suitcase"></i> Tipo de Viagem
+                            </label>
+                            <select id="tipo" name="tipo">
+                                <option value="">Qualquer tipo</option>
+                                <option value="lazer">Lazer</option>
+                                <option value="trabalho">Trabalho</option>
+                                <option value="estudo">Estudo</option>
+                            </select>
+                        </div>
+
+                        <!-- Temperatura -->
+                        <div class="filtro-grupo">
+                            <label for="temperatura">
+                                <i class="fas fa-thermometer-half"></i> Temperatura
+                            </label>
+                            <select id="temperatura" name="temperatura">
+                                <option value="">Qualquer clima</option>
+                                <option value="quente">Quente (25°C+)</option>
+                                <option value="temperado">Temperado (15-25°C)</option>
+                                <option value="frio">Frio (abaixo de 15°C)</option>
+                            </select>
+                        </div>
+
+                        <!-- Comida -->
+                        <div class="filtro-grupo">
+                            <label for="comida">
+                                <i class="fas fa-utensils"></i> Preferência Gastronômica
+                            </label>
+                            <select id="comida" name="comida">
+                                <option value="">Qualquer culinária</option>
+                                <option value="internacional">Internacional</option>
+                                <option value="japonesa">Japonesa</option>
+                                <option value="mexicana">Mexicana</option>
+                                <option value="francesa">Francesa</option>
+                                <option value="tailandesa">Tailandesa</option>
+                                <option value="brasileira">Brasileira</option>
+                                <option value="arabe">Árabe</option>
+                                <option value="asiatica">Asiática</option>
+                                <option value="latina">Latina</option>
+                                <option value="portuguesa">Portuguesa</option>
+                                <option value="americana">Americana</option>
+                                <option value="nordica">Nórdica</option>
+                                <option value="alema">Alemã</option>
+                                <option value="peruana">Peruana</option>
+                                <option value="argentina">Argentina</option>
+                                <option value="marroquina">Marroquina</option>
+                                <option value="frutos_do_mar">Frutos do Mar</option>
+                            </select>
+                        </div>
+
+                        <!-- Transporte -->
+                        <div class="filtro-grupo">
+                            <label for="transporte">
+                                <i class="fas fa-bus"></i> Transporte Preferido
+                            </label>
+                            <select id="transporte" name="transporte">
+                                <option value="">Qualquer transporte</option>
+                                <option value="aviao">Avião</option>
+                                <option value="trem">Trem</option>
+                                <option value="metro">Metrô</option>
+                                <option value="onibus">Ônibus</option>
+                                <option value="carro">Carro</option>
+                                <option value="barco">Barco</option>
+                                <option value="bicicleta">Bicicleta</option>
+                            </select>
+                        </div>
+
+                        <!-- Orçamento -->
+                        <div class="filtro-grupo">
+                            <label for="orcamento">
+                                <i class="fas fa-wallet"></i> Orçamento
+                            </label>
+                            <select id="orcamento" name="orcamento">
+                                <option value="">Qualquer orçamento</option>
+                                <option value="baixo">Econômico</option>
+                                <option value="medio">Moderado</option>
+                                <option value="alto">Luxo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filtros-acoes">
+                        <button type="submit" class="btn-buscar">
+                            <i class="fas fa-search"></i> Buscar Destinos
+                        </button>
+                        <button type="button" class="btn-limpar" id="btn-limpar">
+                            <i class="fas fa-eraser"></i> Limpar Filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultados -->
+    <section class="resultados-section" id="resultados-section">
+        <div class="container">
+            <div class="resultados-header">
+                <h3><i class="fas fa-map-marked-alt"></i> Destinos Recomendados</h3>
+                <span id="contagem-resultados" class="contagem"></span>
+            </div>
+            
+            <div class="destinos-grid" id="destinos-grid">
+                <!-- Cards são inseridos via JavaScript -->
+            </div>
+
+            <div class="sem-resultados" id="sem-resultados" style="display: none;">
+                <i class="fas fa-globe-americas"></i>
+                <h4>Nenhum destino encontrado</h4>
+                <p>Tente ajustar seus filtros para encontrar mais opções.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-detalhes">
+            <button class="modal-fechar" id="modal-fechar" aria-label="Fechar modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-conteudo" id="modal-conteudo">
+                <!-- Conteúdo inserido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 ViajaAI - Encontre seu destino ideal</p>
+            <p class="footer-sub">Feito com <i class="fas fa-heart"></i> para viajantes</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

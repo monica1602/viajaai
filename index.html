@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViajaAI - Recomendação de Viagens</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+/* Reset e Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --secondary: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --dark: #1e293b;
+    --gray-900: #0f172a;
+    --gray-700: #334155;
+    --gray-500: #64748b;
+    --gray-300: #cbd5e1;
+    --gray-100: #f1f5f9;
+    --white: #ffffff;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--gray-100);
+    color: var(--dark);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--white);
+    padding: 20px 0;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo i { font-size: 1.8rem; color: var(--secondary); }
+.logo h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+.tagline { font-size: 0.9rem; opacity: 0.9; font-weight: 300; }
+
+/* Hero */
+.hero {
+    background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-700) 100%);
+    color: var(--white);
+    padding: 60px 0;
+    text-align: center;
+}
+.hero h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+.hero p { font-size: 1.1rem; opacity: 0.8; max-width: 600px; margin: 0 auto; }
+
+/* Filtros */
+.filtros-section { padding: 40px 0; margin-top: -30px; position: relative; z-index: 10; }
+.filtros-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow-xl);
+}
+.filtros-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filtros-card h3 i { color: var(--primary); }
+
+.filtros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.filtro-grupo { display: flex; flex-direction: column; gap: 8px; }
+.filtro-grupo label {
+    font-size: 0.9rem; font-weight: 500; color: var(--gray-700);
+    display: flex; align-items: center; gap: 8px;
+}
+.filtro-grupo label i { color: var(--primary); width: 16px; text-align: center; }
+
+.filtro-grupo select {
+    padding: 12px 16px;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: var(--dark);
+    background-color: var(--white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+.filtro-grupo select:hover { border-color: var(--primary); }
+.filtro-grupo select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+
+.filtros-acoes { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+
+.btn-buscar {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--white); border: none; padding: 14px 35px;
+    border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.3s ease; display: flex; align-items: center; gap: 10px;
+}
+.btn-buscar:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+.btn-limpar {
+    background: var(--white); color: var(--gray-700); border: 2px solid var(--gray-300);
+    padding: 14px 35px; border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif;
+    font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease;
+    display: flex; align-items: center; gap: 10px;
+}
+.btn-limpar:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Resultados */
+.resultados-section { padding: 20px 0 60px; }
+.resultados-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 25px; flex-wrap: wrap; gap: 10px;
+}
+.resultados-header h3 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+.resultados-header h3 i { color: var(--primary); }
+.contagem {
+    background: var(--primary-light); color: var(--primary);
+    padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500;
+}
+
+.destinos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 25px;
+}
+
+/* Card */
+.destino-card {
+    background: var(--white); border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow); transition: all 0.3s ease; cursor: pointer;
+}
+.destino-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); }
+
+.destino-imagem-wrapper { overflow: hidden; position: relative; }
+.destino-imagem { width: 100%; height: 200px; object-fit: cover; transition: transform 0.3s ease; }
+.destino-card:hover .destino-imagem { transform: scale(1.05); }
+
+.destino-compatibilidade {
+    position: absolute; top: 12px; right: 12px;
+    color: var(--white); padding: 6px 12px; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
+}
+.compatibilidade-alta { background: rgba(16, 185, 129, 0.9); }
+.compatibilidade-media { background: rgba(245, 158, 11, 0.9); }
+.compatibilidade-baixa { background: rgba(239, 68, 68, 0.9); }
+
+.destino-info { padding: 20px; }
+.destino-nome { font-size: 1.2rem; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
+.destino-descricao { font-size: 0.9rem; color: var(--gray-500); margin-bottom: 15px; line-height: 1.5; }
+
+.destino-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+    background: var(--gray-100); color: var(--gray-700); padding: 4px 10px;
+    border-radius: 15px; font-size: 0.75rem; font-weight: 500;
+    display: flex; align-items: center; gap: 4px;
+}
+.tag-temperatura { background: #fef3c7; color: #92400e; }
+.tag-duracao { background: #dbeafe; color: #1e40af; }
+.tag-orcamento { background: #d1fae5; color: #065f46; }
+
+/* Sem resultados */
+.sem-resultados { text-align: center; padding: 60px 20px; color: var(--gray-500); }
+.sem-resultados i { font-size: 4rem; margin-bottom: 20px; opacity: 0.3; }
+.sem-resultados h4 { font-size: 1.3rem; margin-bottom: 10px; color: var(--gray-700); }
+
+/* Modal */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: none; justify-content: center;
+    align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(4px);
+}
+.modal-overlay.ativo { display: flex; }
+
+.modal {
+    background: var(--white); border-radius: var(--radius);
+    max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+    position: relative; animation: modalEntrada 0.3s ease;
+}
+@keyframes modalEntrada {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-fechar {
+    position: absolute; top: 15px; right: 15px;
+    background: rgba(0,0,0,0.5); color: var(--white); border: none;
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: background 0.3s ease; z-index: 10;
+}
+.modal-fechar:hover { background: rgba(0,0,0,0.8); }
+
+.modal-imagem { width: 100%; height: 250px; object-fit: cover; }
+.modal-body { padding: 25px; }
+.modal-nome { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
+.modal-descricao { color: var(--gray-500); margin-bottom: 20px; font-size: 0.95rem; }
+
+.modal-detalhes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+.modal-detalhe-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px;
+    background: var(--gray-100); border-radius: var(--radius-sm);
+}
+.modal-detalhe-item i { color: var(--primary); width: 20px; text-align: center; }
+.modal-detalhe-item span { font-size: 0.85rem; color: var(--gray-700); }
+
+.modal-pontos { margin-top: 15px; }
+.modal-pontos h4 { font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.modal-pontos h4 i { color: var(--secondary); }
+.modal-pontos ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.modal-pontos ul li {
+    background: var(--secondary); color: var(--white);
+    padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
+}
+
+/* Footer */
+.footer { background: var(--gray-900); color: var(--gray-300); text-align: center; padding: 30px 0; }
+.footer p { font-size: 0.9rem; }
+.footer-sub { margin-top: 8px; font-size: 0.8rem; opacity: 0.7; }
+.footer-sub i { color: var(--danger); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h2 { font-size: 1.8rem; }
+    .filtros-grid { grid-template-columns: 1fr; }
+    .destinos-grid { grid-template-columns: 1fr; }
+    .header .container { flex-direction: column; text-align: center; }
+    .modal-detalhes { grid-template-columns: 1fr; }
+    .filtros-acoes { flex-direction: column; align-items: stretch; }
+    .btn-buscar, .btn-limpar { justify-content: center; }
+}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-plane-departure"></i>
+                <h1>ViajaAI</h1>
+            </div>
+            <p class="tagline">Descubra seu destino ideal com base nas suas preferências</p>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Para onde você quer ir?</h2>
+            <p>Preencha suas preferências e encontre o destino perfeito para sua próxima aventura</p>
+        </div>
+    </section>
+
+    <section class="filtros-section">
+        <div class="container">
+            <div class="filtros-card">
+                <h3><i class="fas fa-sliders-h"></i> Suas Preferências</h3>
+                <form id="filtros-form">
+                    <div class="filtros-grid">
+                        <div class="filtro-grupo">
+                            <label><i class="fas fa-calendar-alt"></i> Duração da Viagem</label>
+                            <select id="duracao">
+                                <option value="">Qualquer duração</option>
+                                <option value="curta">Curta (até 5 dias)</option>
+                                <option value="media">Média (6-14 dias)</option>
+                                <option value="longa">Longa (15+ dias)</option>
+                            </select>
+                        </div>
+                        <div class="filtro-grupo">
+                            <label><i class="fas fa-suitcase"></i> Tipo de Viagem</label>
+                            <select id="tipo">
+                                <option value="">Qualquer tipo</option>
+                                <option value="lazer">Lazer</option>
+                                <option value="trabalho">Trabalho</option>
+                                <option value="estudo">Estudo</option>
+                            </select>
+                        </div>
+                        <div class="filtro-grupo">
+                            <label><i class="fas fa-thermometer-half"></i> Temperatura</label>
+                            <select id="temperatura">
+                                <option value="">Qualquer clima</option>
+                                <option value="quente">Quente (25°C+)</option>
+                                <option value="temperado">Temperado (15-25°C)</option>
+                                <option value="frio">Frio (abaixo de 15°C)</option>
+                            </select>
+                        </div>
+                        <div class="filtro-grupo">
+                            <label><i class="fas fa-utensils"></i> Preferência Gastronômica</label>
+                            <select id="comida">
+                                <option value="">Qualquer culinária</option>
+                                <option value="internacional">Internacional</option>
+                                <option value="japonesa">Japonesa</option>
+                                <option value="mexicana">Mexicana</option>
+                                <option value="francesa">Francesa</option>
+                                <option value="tailandesa">Tailandesa</option>
+                                <option value="brasileira">Brasileira</option>
+                                <option value="arabe">Árabe</option>
+                                <option value="asiatica">Asiática</option>
+                                <option value="latina">Latina</option>
+                                <option value="portuguesa">Portuguesa</option>
+                                <option value="americana">Americana</option>
+                                <option value="nordica">Nórdica</option>
+                                <option value="alema">Alemã</option>
+                                <option value="peruana">Peruana</option>
+                                <option value="argentina">Argentina</option>
+                                <option value="marroquina">Marroquina</option>
+                                <option value="frutos_do_mar">Frutos do Mar</option>
+                            </select>
+                        </div>
+                        <div class="filtro-grupo">
+                            <label><i class="fas fa-bus"></i> Transporte Preferido</label>
+                            <select id="transporte">
+                                <option value="">Qualquer transporte</option>
+                                <option value="aviao">Avião</option>
+                                <option value="trem">Trem</option>
+                                <option value="metro">Metrô</option>
+                                <option value="onibus">Ônibus</option>
+                                <option value="carro">Carro</option>
+                                <option value="barco">Barco</option>
+                                <option value="bicicleta">Bicicleta</option>
+                            </select>
+                        </div>
+                        <div class="filtro-grupo">
+                            <label><i class="fas fa-wallet"></i> Orçamento</label>
+                            <select id="orcamento">
+                                <option value="">Qualquer orçamento</option>
+                                <option value="baixo">Econômico</option>
+                                <option value="medio">Moderado</option>
+                                <option value="alto">Luxo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filtros-acoes">
+                        <button type="submit" class="btn-buscar"><i class="fas fa-search"></i> Buscar Destinos</button>
+                        <button type="button" class="btn-limpar" id="btn-limpar"><i class="fas fa-eraser"></i> Limpar Filtros</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="resultados-section">
+        <div class="container">
+            <div class="resultados-header">
+                <h3><i class="fas fa-map-marked-alt"></i> Destinos Recomendados</h3>
+                <span id="contagem-resultados" class="contagem"></span>
+            </div>
+            <div class="destinos-grid" id="destinos-grid"></div>
+            <div class="sem-resultados" id="sem-resultados" style="display: none;">
+                <i class="fas fa-globe-americas"></i>
+                <h4>Nenhum destino encontrado</h4>
+                <p>Tente ajustar seus filtros para encontrar mais opções.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <button class="modal-fechar" id="modal-fechar" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            <div id="modal-conteudo"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 ViajaAI - Encontre seu destino ideal</p>
+            <p class="footer-sub">Feito com <i class="fas fa-heart"></i> para viajantes</p>
+        </div>
+    </footer>
+
+<script>
+const DESTINOS = [
+    { id:1, nome:"Paris, França", imagem:"https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop", descricao:"A cidade luz, repleta de arte, cultura e gastronomia refinada.", duracao:"media", tipo:["lazer","estudo"], temperatura:"temperado", comida:["francesa","internacional"], transporte:["metro","trem","aviao"], orcamento:"alto", idioma:"Francês", melhor_epoca:"Primavera/Verão", pontos_turisticos:["Torre Eiffel","Louvre","Champs-Élysées"] },
+    { id:2, nome:"Tóquio, Japão", imagem:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop", descricao:"Uma fusão única entre tradição milenar e tecnologia de ponta.", duracao:"longa", tipo:["lazer","trabalho","estudo"], temperatura:"temperado", comida:["japonesa","asiatica"], transporte:["metro","trem","aviao"], orcamento:"alto", idioma:"Japonês", melhor_epoca:"Primavera (cerejeiras)", pontos_turisticos:["Shibuya","Templo Senso-ji","Monte Fuji"] },
+    { id:3, nome:"Cancún, México", imagem:"https://images.unsplash.com/photo-1510097467424-192d713fd8b2?w=400&h=300&fit=crop", descricao:"Praias paradisíacas com águas cristalinas e vida noturna agitada.", duracao:"curta", tipo:["lazer"], temperatura:"quente", comida:["mexicana","internacional"], transporte:["aviao","onibus"], orcamento:"medio", idioma:"Espanhol", melhor_epoca:"Dezembro a Abril", pontos_turisticos:["Chichén Itzá","Isla Mujeres","Xcaret"] },
+    { id:4, nome:"Lisboa, Portugal", imagem:"https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=400&h=300&fit=crop", descricao:"Cidade histórica com clima agradável, pastéis de nata e fado.", duracao:"media", tipo:["lazer","estudo","trabalho"], temperatura:"temperado", comida:["portuguesa","internacional"], transporte:["metro","trem","aviao"], orcamento:"medio", idioma:"Português", melhor_epoca:"Primavera/Verão", pontos_turisticos:["Torre de Belém","Alfama","Sintra"] },
+    { id:5, nome:"Reykjavik, Islândia", imagem:"https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=400&h=300&fit=crop", descricao:"Paisagens vulcânicas, aurora boreal e fontes termais naturais.", duracao:"curta", tipo:["lazer"], temperatura:"frio", comida:["nordica","internacional"], transporte:["aviao","carro"], orcamento:"alto", idioma:"Islandês", melhor_epoca:"Inverno (aurora) / Verão (sol da meia-noite)", pontos_turisticos:["Blue Lagoon","Golden Circle","Aurora Boreal"] },
+    { id:6, nome:"Bangkok, Tailândia", imagem:"https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=300&fit=crop", descricao:"Templos dourados, comida de rua incrível e mercados flutuantes.", duracao:"media", tipo:["lazer","trabalho"], temperatura:"quente", comida:["tailandesa","asiatica"], transporte:["metro","tuk-tuk","aviao"], orcamento:"baixo", idioma:"Tailandês", melhor_epoca:"Novembro a Fevereiro", pontos_turisticos:["Grand Palace","Wat Arun","Chatuchak Market"] },
+    { id:7, nome:"Nova York, EUA", imagem:"https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop", descricao:"A cidade que nunca dorme, com teatros, museus e arranha-céus icônicos.", duracao:"media", tipo:["lazer","trabalho","estudo"], temperatura:"temperado", comida:["americana","internacional"], transporte:["metro","aviao","taxi"], orcamento:"alto", idioma:"Inglês", melhor_epoca:"Primavera/Outono", pontos_turisticos:["Central Park","Estátua da Liberdade","Times Square"] },
+    { id:8, nome:"Machu Picchu, Peru", imagem:"https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=400&h=300&fit=crop", descricao:"Ruínas incas no alto dos Andes com vistas de tirar o fôlego.", duracao:"curta", tipo:["lazer","estudo"], temperatura:"frio", comida:["peruana","latina"], transporte:["trem","aviao","trilha"], orcamento:"medio", idioma:"Espanhol", melhor_epoca:"Maio a Setembro", pontos_turisticos:["Cidadela Inca","Huayna Picchu","Vale Sagrado"] },
+    { id:9, nome:"Dubai, Emirados Árabes", imagem:"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop", descricao:"Luxo, arranha-céus futuristas e deserto dourado.", duracao:"curta", tipo:["lazer","trabalho"], temperatura:"quente", comida:["arabe","internacional"], transporte:["metro","aviao","taxi"], orcamento:"alto", idioma:"Árabe/Inglês", melhor_epoca:"Novembro a Março", pontos_turisticos:["Burj Khalifa","Palm Jumeirah","Desert Safari"] },
+    { id:10, nome:"Buenos Aires, Argentina", imagem:"https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=400&h=300&fit=crop", descricao:"Tango, churrasco argentino e arquitetura europeia na América do Sul.", duracao:"media", tipo:["lazer","estudo"], temperatura:"temperado", comida:["argentina","latina"], transporte:["metro","onibus","aviao"], orcamento:"baixo", idioma:"Espanhol", melhor_epoca:"Março a Maio / Setembro a Novembro", pontos_turisticos:["La Boca","Recoleta","Puerto Madero"] },
+    { id:11, nome:"Maldivas", imagem:"https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&h=300&fit=crop", descricao:"Ilhas paradisíacas com bangalôs sobre águas cristalinas.", duracao:"curta", tipo:["lazer"], temperatura:"quente", comida:["internacional","frutos_do_mar"], transporte:["aviao","barco"], orcamento:"alto", idioma:"Divehi/Inglês", melhor_epoca:"Novembro a Abril", pontos_turisticos:["Resorts sobre a água","Mergulho","Bancos de areia"] },
+    { id:12, nome:"Berlim, Alemanha", imagem:"https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&h=300&fit=crop", descricao:"História, arte urbana, vida noturna vibrante e cultura alternativa.", duracao:"media", tipo:["lazer","estudo","trabalho"], temperatura:"frio", comida:["alema","internacional"], transporte:["metro","trem","bicicleta"], orcamento:"medio", idioma:"Alemão", melhor_epoca:"Maio a Setembro", pontos_turisticos:["Portão de Brandemburgo","Muro de Berlim","Ilha dos Museus"] },
+    { id:13, nome:"Rio de Janeiro, Brasil", imagem:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=400&h=300&fit=crop", descricao:"Praias famosas, samba, Cristo Redentor e energia contagiante.", duracao:"media", tipo:["lazer"], temperatura:"quente", comida:["brasileira","latina"], transporte:["metro","onibus","aviao"], orcamento:"medio", idioma:"Português", melhor_epoca:"Dezembro a Março", pontos_turisticos:["Cristo Redentor","Copacabana","Pão de Açúcar"] },
+    { id:14, nome:"Queenstown, Nova Zelândia", imagem:"https://images.unsplash.com/photo-1589871973318-9ca1258faa5d?w=400&h=300&fit=crop", descricao:"Capital mundial dos esportes de aventura com paisagens cinematográficas.", duracao:"longa", tipo:["lazer"], temperatura:"frio", comida:["internacional","neozelandesa"], transporte:["aviao","carro"], orcamento:"alto", idioma:"Inglês", melhor_epoca:"Dezembro a Fevereiro", pontos_turisticos:["Bungee Jump","Milford Sound","Lago Wakatipu"] },
+    { id:15, nome:"Marrakech, Marrocos", imagem:"https://images.unsplash.com/photo-1597212618440-806262de4f6b?w=400&h=300&fit=crop", descricao:"Mercados vibrantes, palácios e o deserto do Saara como vizinho.", duracao:"curta", tipo:["lazer"], temperatura:"quente", comida:["marroquina","arabe"], transporte:["aviao","carro","camelo"], orcamento:"baixo", idioma:"Árabe/Francês", melhor_epoca:"Março a Maio / Setembro a Novembro", pontos_turisticos:["Medina","Jardim Majorelle","Deserto do Saara"] }
+];
+
+function calcularScore(destino, filtros) {
+    let score = 0, maxScore = 0;
+    if (filtros.duracao) { maxScore += 3; if (destino.duracao === filtros.duracao) score += 3; }
+    if (filtros.tipo) { maxScore += 3; if (destino.tipo.includes(filtros.tipo)) score += 3; }
+    if (filtros.temperatura) { maxScore += 2; if (destino.temperatura === filtros.temperatura) score += 2; }
+    if (filtros.comida) { maxScore += 2; if (destino.comida.includes(filtros.comida)) score += 2; }
+    if (filtros.transporte) { maxScore += 1; if (destino.transporte.includes(filtros.transporte)) score += 1; }
+    if (filtros.orcamento) { maxScore += 2; if (destino.orcamento === filtros.orcamento) score += 2; }
+    if (maxScore === 0) return 100;
+    return Math.round((score / maxScore) * 100);
+}
+
+function obterFiltros() {
+    return {
+        duracao: document.getElementById('duracao').value || null,
+        tipo: document.getElementById('tipo').value || null,
+        temperatura: document.getElementById('temperatura').value || null,
+        comida: document.getElementById('comida').value || null,
+        transporte: document.getElementById('transporte').value || null,
+        orcamento: document.getElementById('orcamento').value || null
+    };
+}
+
+function buscarRecomendacoes() {
+    const filtros = obterFiltros();
+    const temFiltro = Object.values(filtros).some(v => v !== null);
+
+    let resultados;
+    if (!temFiltro) {
+        resultados = DESTINOS.map(d => ({...d}));
+    } else {
+        resultados = DESTINOS.map(d => ({...d, compatibilidade: calcularScore(d, filtros)}))
+            .filter(d => d.compatibilidade > 0)
+            .sort((a, b) => b.compatibilidade - a.compatibilidade);
+    }
+    exibirDestinos(resultados, temFiltro);
+}
+
+function exibirDestinos(destinos, comScore) {
+    const grid = document.getElementById('destinos-grid');
+    const semRes = document.getElementById('sem-resultados');
+    const contagem = document.getElementById('contagem-resultados');
+
+    if (destinos.length === 0) {
+        grid.innerHTML = '';
+        semRes.style.display = 'block';
+        contagem.textContent = '';
+        return;
+    }
+    semRes.style.display = 'none';
+    contagem.textContent = destinos.length + ' destino' + (destinos.length > 1 ? 's' : '') + ' encontrado' + (destinos.length > 1 ? 's' : '');
+
+    const tempLabel = { quente:'☀️ Quente', temperado:'🌤️ Temperado', frio:'❄️ Frio' };
+    const durLabel = { curta:'⚡ Curta', media:'📅 Média', longa:'🗓️ Longa' };
+    const orcLabel = { baixo:'💰 Econômico', medio:'💳 Moderado', alto:'💎 Luxo' };
+
+    grid.innerHTML = destinos.map(d => {
+        let badge = '';
+        if (comScore && d.compatibilidade !== undefined) {
+            let cls = d.compatibilidade >= 70 ? 'compatibilidade-alta' : d.compatibilidade >= 40 ? 'compatibilidade-media' : 'compatibilidade-baixa';
+            badge = '<span class="destino-compatibilidade ' + cls + '">' + d.compatibilidade + '% compatível</span>';
+        }
+        return '<article class="destino-card" data-id="' + d.id + '">' +
+            '<div class="destino-imagem-wrapper"><img src="' + d.imagem + '" alt="' + d.nome + '" class="destino-imagem" loading="lazy">' + badge + '</div>' +
+            '<div class="destino-info"><h4 class="destino-nome">' + d.nome + '</h4>' +
+            '<p class="destino-descricao">' + d.descricao + '</p>' +
+            '<div class="destino-tags"><span class="tag tag-temperatura">' + (tempLabel[d.temperatura]||d.temperatura) + '</span>' +
+            '<span class="tag tag-duracao">' + (durLabel[d.duracao]||d.duracao) + '</span>' +
+            '<span class="tag tag-orcamento">' + (orcLabel[d.orcamento]||d.orcamento) + '</span></div></div></article>';
+    }).join('');
+
+    grid.querySelectorAll('.destino-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const dest = destinos.find(d => d.id === parseInt(card.dataset.id));
+            if (dest) abrirModal(dest);
+        });
+    });
+}
+
+function abrirModal(d) {
+    const overlay = document.getElementById('modal-overlay');
+    const conteudo = document.getElementById('modal-conteudo');
+    const durLabels = { curta:'Curta (até 5 dias)', media:'Média (6-14 dias)', longa:'Longa (15+ dias)' };
+    const orcLabels = { baixo:'Econômico', medio:'Moderado', alto:'Luxo' };
+    const tipoLabels = { lazer:'Lazer', trabalho:'Trabalho', estudo:'Estudo' };
+
+    conteudo.innerHTML = '<img src="' + d.imagem + '" alt="' + d.nome + '" class="modal-imagem">' +
+        '<div class="modal-body"><h2 class="modal-nome">' + d.nome + '</h2>' +
+        '<p class="modal-descricao">' + d.descricao + '</p>' +
+        '<div class="modal-detalhes">' +
+        '<div class="modal-detalhe-item"><i class="fas fa-calendar-alt"></i><span>' + durLabels[d.duracao] + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-suitcase"></i><span>' + d.tipo.map(t=>tipoLabels[t]||t).join(', ') + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-thermometer-half"></i><span>' + d.temperatura.charAt(0).toUpperCase() + d.temperatura.slice(1) + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-wallet"></i><span>' + orcLabels[d.orcamento] + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-language"></i><span>' + d.idioma + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-sun"></i><span>' + d.melhor_epoca + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-utensils"></i><span>' + d.comida.join(', ') + '</span></div>' +
+        '<div class="modal-detalhe-item"><i class="fas fa-route"></i><span>' + d.transporte.join(', ') + '</span></div>' +
+        '</div><div class="modal-pontos"><h4><i class="fas fa-star"></i> Pontos Turísticos</h4><ul>' +
+        d.pontos_turisticos.map(p => '<li>' + p + '</li>').join('') +
+        '</ul></div></div>';
+
+    overlay.classList.add('ativo');
+    document.body.style.overflow = 'hidden';
+}
+
+function fecharModal() {
+    document.getElementById('modal-overlay').classList.remove('ativo');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    buscarRecomendacoes();
+    document.getElementById('filtros-form').addEventListener('submit', e => { e.preventDefault(); buscarRecomendacoes(); });
+    document.getElementById('btn-limpar').addEventListener('click', () => { document.getElementById('filtros-form').reset(); buscarRecomendacoes(); });
+    document.getElementById('modal-fechar').addEventListener('click', fecharModal);
+    document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target.id === 'modal-overlay') fecharModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
+});
+</script>
+</body>
+</html>
