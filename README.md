@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  🌐 <a href="https://viaja-ai.onrender.com"><strong>Acessar o site ao vivo</strong></a>
+  🌐 <a href="https://viajaai-x8q9.onrender.com"><strong>Acessar o site ao vivo</strong></a>
 </p>
 
 ---
@@ -197,7 +197,7 @@ Acesse https://viajaai-x8q9.onrender.com/
 
 O projeto está publicado e acessível em:
 
-**🔗 https://viaja-ai.onrender.com**
+**🔗 https://viajaai-x8q9.onrender.com**
 
 > O Render pode levar alguns segundos para iniciar na primeira visita (free tier). Após o carregamento inicial, a navegação é instantânea.
 
