@@ -52,7 +52,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Acesse **http://localhost:5000** no navegador.
+Acesse https://viajaai-x8q9.onrender.com/
 
 ---
 
